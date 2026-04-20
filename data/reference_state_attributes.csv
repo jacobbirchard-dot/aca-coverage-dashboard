@@ -1,0 +1,52 @@
+state,expanded_medicaid,expansion_year,trump_2024,state_abbr,fips_state
+Alabama,False,,True,AL,1
+Alaska,True,2015.0,True,AK,2
+Arizona,True,2014.0,True,AZ,4
+Arkansas,True,2014.0,True,AR,5
+California,True,2014.0,False,CA,6
+Colorado,True,2014.0,False,CO,8
+Connecticut,True,2014.0,False,CT,9
+Delaware,True,2014.0,False,DE,10
+Florida,False,,True,FL,12
+Georgia,True,2024.0,True,GA,13
+Hawaii,True,2014.0,False,HI,15
+Idaho,True,2020.0,True,ID,16
+Illinois,True,2014.0,False,IL,17
+Indiana,True,2015.0,True,IN,18
+Iowa,True,2014.0,True,IA,19
+Kansas,True,2020.0,True,KS,20
+Kentucky,True,2014.0,True,KY,21
+Louisiana,True,2016.0,True,LA,22
+Maine,True,2019.0,False,ME,23
+Maryland,True,2014.0,False,MD,24
+Massachusetts,True,2014.0,False,MA,25
+Michigan,True,2014.0,True,MI,26
+Minnesota,True,2014.0,False,MN,27
+Mississippi,False,,True,MS,28
+Missouri,True,2021.0,True,MO,29
+Montana,True,2016.0,True,MT,30
+Nebraska,True,2020.0,True,NE,31
+Nevada,True,2014.0,True,NV,32
+New Hampshire,True,2014.0,True,NH,33
+New Jersey,True,2014.0,False,NJ,34
+New Mexico,True,2014.0,False,NM,35
+New York,True,2014.0,False,NY,36
+North Carolina,True,2023.0,True,NC,37
+North Dakota,True,2014.0,True,ND,38
+Ohio,True,2014.0,True,OH,39
+Oklahoma,True,2020.0,True,OK,40
+Oregon,True,2014.0,False,OR,41
+Pennsylvania,True,2015.0,True,PA,42
+Rhode Island,True,2014.0,False,RI,44
+South Carolina,False,,True,SC,45
+South Dakota,True,2023.0,True,SD,46
+Tennessee,False,,True,TN,47
+Texas,False,,True,TX,48
+Utah,True,2020.0,True,UT,49
+Vermont,True,2014.0,False,VT,50
+Virginia,True,2019.0,False,VA,51
+Washington,True,2014.0,False,WA,53
+West Virginia,True,2014.0,True,WV,54
+Wisconsin,False,,True,WI,55
+Wyoming,False,,True,WY,56
+District of Columbia,True,2014.0,False,DC,11
