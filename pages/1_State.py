@@ -1,5 +1,5 @@
 """
-State Explorer
+State
 Interactive state-level comparisons for marketplace, medicaid, and uninsured data.
 """
 import streamlit as st
@@ -13,7 +13,7 @@ from data_loader import (
 )
 from layout import render_sidebar, render_footer
 
-st.set_page_config(page_title="State Explorer | ACA Dashboard", page_icon="🏥", layout="wide")
+st.set_page_config(page_title="State | ACA Dashboard", page_icon="🏥", layout="wide")
 
 render_sidebar()
 
@@ -41,7 +41,7 @@ PLOT_LAYOUT = dict(
 panel = load_master_panel()
 attrs = load_state_attributes()
 
-st.markdown("# State Explorer")
+st.markdown("# State")
 st.markdown(
     "Compare coverage trends across states. Select states below or filter by "
     "Medicaid expansion status to see how policy choices shaped outcomes."

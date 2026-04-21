@@ -1,5 +1,5 @@
 """
-ACA Coverage Dashboard — National View
+ACA Coverage Dashboard — National
 """
 import streamlit as st
 import plotly.graph_objects as go
