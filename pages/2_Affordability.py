@@ -97,16 +97,6 @@ fig_gap.add_trace(go.Scatter(
     fillcolor="rgba(124, 58, 237, 0.08)",
 ))
 
-fig_gap.add_annotation(
-    x=2026,
-    y=mkt[mkt["year"] == 2026]["avg_premium_after_aptc"].values[0],
-    text="Enhanced subsidies<br>expire?",
-    showarrow=True, arrowhead=2,
-    ax=50, ay=-30,
-    font=dict(size=11, color=COLORS["uninsured"]),
-    arrowcolor=COLORS["uninsured"],
-)
-
 fig_gap.update_layout(
     **PLOT_LAYOUT,
     height=400,
