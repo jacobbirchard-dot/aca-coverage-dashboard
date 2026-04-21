@@ -79,12 +79,23 @@ def load_fpl_thresholds():
 @st.cache_data
 def national_marketplace_totals():
     mp = load_marketplace()
-    agg = mp.groupby("year").agg(
-        total_selections=("total_plan_selections", "sum"),
-        avg_premium=("avg_monthly_premium", "mean"),
-        avg_premium_after_aptc=("avg_premium_after_aptc", "mean"),
-        pct_with_aptc=("pct_with_aptc", "mean"),
-        premium_lte_10=("premium_lte_10", "sum"),
+
+    def weighted(group, col):
+        mask = group[col].notna() & group["total_plan_selections"].notna()
+        weights = group.loc[mask, "total_plan_selections"]
+        if weights.sum() == 0:
+            return pd.NA
+        return (group.loc[mask, col] * weights).sum() / weights.sum()
+
+    agg = mp.groupby("year").apply(
+        lambda g: pd.Series({
+            "total_selections": g["total_plan_selections"].sum(),
+            "avg_premium": weighted(g, "avg_monthly_premium"),
+            "avg_premium_after_aptc": weighted(g, "avg_premium_after_aptc"),
+            "pct_with_aptc": weighted(g, "pct_with_aptc"),
+            "premium_lte_10": g["premium_lte_10"].sum(),
+        }),
+        include_groups=False,
     ).round(1).reset_index()
     return agg
 
