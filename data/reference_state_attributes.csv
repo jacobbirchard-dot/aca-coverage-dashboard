@@ -8,13 +8,13 @@ Colorado,True,2014.0,False,CO,8
 Connecticut,True,2014.0,False,CT,9
 Delaware,True,2014.0,False,DE,10
 Florida,False,,True,FL,12
-Georgia,True,2024.0,True,GA,13
+Georgia,False,,True,GA,13
 Hawaii,True,2014.0,False,HI,15
 Idaho,True,2020.0,True,ID,16
 Illinois,True,2014.0,False,IL,17
 Indiana,True,2015.0,True,IN,18
 Iowa,True,2014.0,True,IA,19
-Kansas,True,2020.0,True,KS,20
+Kansas,False,,True,KS,20
 Kentucky,True,2014.0,True,KY,21
 Louisiana,True,2016.0,True,LA,22
 Maine,True,2019.0,False,ME,23
