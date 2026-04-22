@@ -5,6 +5,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
 from data_loader import (
+    load_effectuated,
     load_nhis_national,
     national_marketplace_totals,
     national_medicaid_monthly,
@@ -66,17 +67,18 @@ nhis = load_nhis_national()
 nhis_all = nhis[nhis["age_group"] == "All ages"].sort_values("year")
 mkt = national_marketplace_totals()
 med = national_medicaid_monthly()
+eff_us_2025 = load_effectuated().query("state == 'United States' and year == 2025").iloc[0]
 
 # ── Key metrics ──────────────────────────────────────────────────────────────
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    latest_mp = mkt[mkt["year"] == 2025]["total_selections"].values[0]
+    latest_mp = eff_us_2025["effectuated_enrollment"]
     first_mp = mkt[mkt["year"] == 2020]["total_selections"].values[0]
     st.metric(
-        "Marketplace Enrollment (2025)",
+        "Marketplace Effectuated (2025)",
         fmt_millions(latest_mp),
-        delta=f"+{fmt_millions(latest_mp - first_mp)} since 2020",
+        delta=f"+{fmt_millions(latest_mp - first_mp)} since 2020 (vs. 2020 selections)",
     )
 
 with col2:

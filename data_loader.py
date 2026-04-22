@@ -41,7 +41,8 @@ def load_marketplace():
 
 @st.cache_data
 def load_effectuated():
-    return pd.read_csv(DATA_DIR / "effectuated_enrollment.csv")
+    df = pd.read_csv(DATA_DIR / "effectuated_enrollment.csv")
+    return df.dropna(subset=["effectuated_enrollment"])
 
 
 @st.cache_data

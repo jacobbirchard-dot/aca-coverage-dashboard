@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from data_loader import (
     load_benchmark_premiums,
+    load_effectuated,
     national_marketplace_totals,
 )
 from layout import render_sidebar, render_footer
@@ -43,6 +44,7 @@ def fmt_millions(n):
 # ── Data ─────────────────────────────────────────────────────────────────────
 mkt = national_marketplace_totals()
 bench = load_benchmark_premiums()
+eff_us_2025 = load_effectuated().query("state == 'United States' and year == 2025").iloc[0]
 
 st.markdown("# Affordability")
 st.markdown(
@@ -55,8 +57,8 @@ st.markdown(
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    aptc_2025 = mkt[mkt["year"] == 2025]["pct_with_aptc"].values[0]
-    st.metric("% Receiving Subsidies (2025)", f"{aptc_2025:.0f}%")
+    aptc_pct_2025 = eff_us_2025["pct_aptc"] * 100
+    st.metric("% Receiving Subsidies (2025)", f"{aptc_pct_2025:.0f}%", help="Share of effectuated enrollees receiving APTC.")
 
 with col2:
     after_2025 = mkt[mkt["year"] == 2025]["avg_premium_after_aptc"].values[0]
@@ -64,8 +66,8 @@ with col2:
 
 with col3:
     lte10_2025 = mkt[mkt["year"] == 2025]["premium_lte_10"].values[0]
-    lte10_pct = lte10_2025 / mkt[mkt["year"] == 2025]["total_selections"].values[0] * 100
-    st.metric("Enrollees Paying ≤$10/mo", f"{fmt_millions(lte10_2025)}", delta=f"{lte10_pct:.0f}% of total")
+    lte10_pct = lte10_2025 / eff_us_2025["effectuated_enrollment"] * 100
+    st.metric("Enrollees Paying ≤$10/mo", f"{fmt_millions(lte10_2025)}", delta=f"{lte10_pct:.0f}% of effectuated")
 
 
 # ── Chart 1: Subsidy gap ────────────────────────────────────────────────────
