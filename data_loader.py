@@ -103,6 +103,7 @@ def national_marketplace_totals():
 @st.cache_data
 def national_medicaid_monthly():
     med = load_medicaid_monthly()
+    med = med[med["state"] != "United States"]
     agg = med.groupby(["date", "year", "month"]).agg(
         total_enrollment=("total_enrollment", "sum"),
         medicaid_enrollment=("medicaid_enrollment", "sum"),
