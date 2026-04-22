@@ -73,25 +73,25 @@ with col3:
 # ── Chart 1: Subsidy gap ────────────────────────────────────────────────────
 st.markdown("---")
 st.markdown("### The Subsidy Gap")
-st.markdown(
-    "The gap between full premiums and what subsidized enrollees pay has widened "
-    "since enhanced subsidies began. Watch the 2026 number — it shows a sharp "
-    "increase in after-subsidy costs as enhanced subsidies face expiration."
+st.caption(
+    "Premiums shown are for APTC recipients only — i.e., enrollees eligible for "
+    "and receiving a subsidy. The gap widened since enhanced subsidies began. "
+    "Watch 2026 — after-subsidy costs rise sharply as enhanced subsidies face expiration."
 )
 
 fig_gap = go.Figure()
 
 fig_gap.add_trace(go.Scatter(
-    x=mkt["year"], y=mkt["avg_premium"],
-    name="Avg. full premium",
+    x=mkt["year"], y=mkt["subsidized_full_premium"],
+    name="Avg. full premium (subsidized enrollees)",
     mode="lines+markers",
     line=dict(color=COLORS["text_muted"], width=2),
     marker=dict(size=8),
 ))
 
 fig_gap.add_trace(go.Scatter(
-    x=mkt["year"], y=mkt["avg_premium_after_aptc"],
-    name="Avg. after subsidies",
+    x=mkt["year"], y=mkt["subsidized_after_aptc"],
+    name="Avg. after subsidies (subsidized enrollees)",
     mode="lines+markers",
     line=dict(color=COLORS["marketplace"], width=3),
     marker=dict(size=10),

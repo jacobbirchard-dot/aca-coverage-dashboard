@@ -23,11 +23,6 @@ def load_nhis_national():
 
 
 @st.cache_data
-def load_nhis_exchange():
-    return pd.read_csv(DATA_DIR / "nhis_exchange_coverage.csv")
-
-
-@st.cache_data
 def load_medicaid_monthly():
     df = pd.read_csv(DATA_DIR / "medicaid_enrollment.csv")
     df["date"] = pd.to_datetime(df["date"])
@@ -51,28 +46,8 @@ def load_benchmark_premiums():
 
 
 @st.cache_data
-def load_census_state():
-    return pd.read_csv(DATA_DIR / "census_state_coverage.csv")
-
-
-@st.cache_data
-def load_census_county():
-    return pd.read_csv(DATA_DIR / "census_county_coverage.csv")
-
-
-@st.cache_data
 def load_state_attributes():
     return pd.read_csv(DATA_DIR / "reference_state_attributes.csv")
-
-
-@st.cache_data
-def load_oe_2026():
-    return pd.read_csv(DATA_DIR / "oe_2026_selections.csv")
-
-
-@st.cache_data
-def load_fpl_thresholds():
-    return pd.read_csv(DATA_DIR / "reference_fpl_thresholds.csv")
 
 
 # ── National aggregates ──────────────────────────────────────────────────────
@@ -81,12 +56,26 @@ def load_fpl_thresholds():
 def national_marketplace_totals():
     mp = load_marketplace()
 
-    def weighted(group, col):
-        mask = group[col].notna() & group["total_plan_selections"].notna()
-        weights = group.loc[mask, "total_plan_selections"]
+    def weighted(group, col, weight_col="total_plan_selections"):
+        mask = group[col].notna() & group[weight_col].notna()
+        weights = group.loc[mask, weight_col]
         if weights.sum() == 0:
             return pd.NA
         return (group.loc[mask, col] * weights).sum() / weights.sum()
+
+    def subsidized_full_premium(group):
+        # For APTC recipients: full premium = APTC amount + after-APTC premium.
+        # Weight each state's contribution by its aptc_consumers.
+        mask = (
+            group["aptc_avg_amount"].notna()
+            & group["aptc_avg_premium_after"].notna()
+            & group["aptc_consumers"].notna()
+        )
+        if mask.sum() == 0 or group.loc[mask, "aptc_consumers"].sum() == 0:
+            return pd.NA
+        full = group.loc[mask, "aptc_avg_amount"] + group.loc[mask, "aptc_avg_premium_after"]
+        weights = group.loc[mask, "aptc_consumers"]
+        return (full * weights).sum() / weights.sum()
 
     agg = mp.groupby("year").apply(
         lambda g: pd.Series({
@@ -95,6 +84,8 @@ def national_marketplace_totals():
             "avg_premium_after_aptc": weighted(g, "avg_premium_after_aptc"),
             "pct_with_aptc": weighted(g, "pct_with_aptc"),
             "premium_lte_10": g["premium_lte_10"].sum(),
+            "subsidized_full_premium": subsidized_full_premium(g),
+            "subsidized_after_aptc": weighted(g, "aptc_avg_premium_after", "aptc_consumers"),
         }),
         include_groups=False,
     ).round(1).reset_index()

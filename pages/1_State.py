@@ -5,10 +5,11 @@ Interactive state-level comparisons for marketplace, medicaid, and uninsured dat
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import pandas as pd
 from data_loader import (
+    load_effectuated,
     load_master_panel,
-    load_medicaid_monthly,
     load_state_attributes,
 )
 from layout import render_sidebar, render_footer
@@ -122,6 +123,11 @@ if not unins_data.empty and len(selected_states) <= 8:
         xaxis=dict(dtick=1),
     )
     st.plotly_chart(fig_ur, use_container_width=True)
+    st.caption(
+        "Source: U.S. Census Bureau, American Community Survey (ACS), Table S2701. "
+        "State-level uninsured rates use ACS methodology, which differs from the NHIS "
+        "figures shown on the National page — figures are not directly comparable."
+    )
 elif unins_data.empty:
     st.info("Uninsured rate data is available for 2021–2024.")
 else:
@@ -190,6 +196,11 @@ fig_scatter.update_layout(
     yaxis=dict(title="Uninsured rate (%)", gridcolor="#E2E8F0", ticksuffix="%"),
 )
 st.plotly_chart(fig_scatter, use_container_width=True)
+st.caption(
+    "Source: U.S. Census Bureau, American Community Survey (ACS), Table S2701. "
+    "ACS state-level uninsured rates differ from NHIS national estimates in methodology "
+    "and reference period."
+)
 
 
 # ── Chart 4: Marketplace growth ranking ───────────────────────────────────────
@@ -200,7 +211,25 @@ st.markdown("Which states saw the biggest surge in ACA enrollment?")
 growth = panel[panel["year"] == 2025].dropna(subset=["growth_since_2020_pct"])
 growth = growth.nlargest(20, "growth_since_2020_pct").sort_values("growth_since_2020_pct")
 
-fig_growth = go.Figure()
+eff = load_effectuated()[["state", "effectuated_enrollment"]]
+growth = growth.merge(eff, on="state", how="left")
+
+
+def fmt_eff(v):
+    if pd.isna(v):
+        return "N/A"
+    if v >= 1e6:
+        return f"{v / 1e6:.1f}M"
+    return f"{v / 1e3:.0f}K"
+
+
+fig_growth = make_subplots(
+    rows=1, cols=2,
+    column_widths=[0.8, 0.2],
+    shared_yaxes=True,
+    horizontal_spacing=0.02,
+)
+
 fig_growth.add_trace(go.Bar(
     y=growth["state"],
     x=growth["growth_since_2020_pct"],
@@ -213,17 +242,38 @@ fig_growth.add_trace(go.Bar(
     textposition="outside",
     textfont=dict(size=11),
     hovertemplate="%{y}: %{x:.1f}% growth<extra></extra>",
-))
+), row=1, col=1)
+
+fig_growth.add_trace(go.Scatter(
+    y=growth["state"],
+    x=[0] * len(growth),
+    mode="text",
+    text=[fmt_eff(v) for v in growth["effectuated_enrollment"]],
+    textfont=dict(size=12, color="#1E293B"),
+    textposition="middle right",
+    hoverinfo="skip",
+    showlegend=False,
+), row=1, col=2)
 
 fig_growth.update_layout(
     **PLOT_LAYOUT,
     height=550,
-    xaxis=dict(title="% growth in plan selections (2020→2025)", gridcolor="#E2E8F0", ticksuffix="%"),
-    yaxis=dict(tickfont=dict(size=11)),
     showlegend=False,
 )
+fig_growth.update_xaxes(
+    title_text="% growth in plan selections (2020→2025)",
+    gridcolor="#E2E8F0", ticksuffix="%",
+    row=1, col=1,
+)
+fig_growth.update_xaxes(
+    title_text="2025 Effectuated",
+    showticklabels=False, showgrid=False, zeroline=False,
+    range=[-0.5, 1],
+    row=1, col=2,
+)
+fig_growth.update_yaxes(tickfont=dict(size=11), row=1, col=1)
 st.plotly_chart(fig_growth, use_container_width=True)
-st.caption("🟢 Expanded Medicaid  🔴 Did not expand")
+st.caption("🟢 Expanded Medicaid  🔴 Did not expand · Effectuated column shows 2025 (latest available).")
 
 
 # ── Data table ────────────────────────────────────────────────────────────────

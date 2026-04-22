@@ -45,14 +45,9 @@ aca-dashboard/
 │   ├── marketplace_enrollment.csv
 │   ├── medicaid_enrollment.csv
 │   ├── nhis_national_coverage.csv
-│   ├── nhis_exchange_coverage.csv
-│   ├── census_state_coverage.csv
-│   ├── census_county_coverage.csv
 │   ├── benchmark_premiums.csv
 │   ├── effectuated_enrollment.csv
-│   ├── oe_2026_selections.csv
-│   ├── reference_state_attributes.csv
-│   └── reference_fpl_thresholds.csv
+│   └── reference_state_attributes.csv
 └── pages/
     ├── 1_State.py
     ├── 2_Coverage_Seesaw.py

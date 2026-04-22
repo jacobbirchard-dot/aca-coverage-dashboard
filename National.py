@@ -104,10 +104,11 @@ with col3:
 
 with col4:
     lte10 = mkt[mkt["year"] == 2025]["premium_lte_10"].values[0]
+    lte10_pct = lte10 / mkt[mkt["year"] == 2025]["total_selections"].values[0] * 100
     st.metric(
         "Paying ≤$10/mo (2025)",
         fmt_millions(lte10),
-        delta="42% of enrollees",
+        delta=f"{lte10_pct:.0f}% of enrollees",
     )
 
 
@@ -164,6 +165,11 @@ fig_unins.update_layout(
     showlegend=False,
 )
 st.plotly_chart(fig_unins, use_container_width=True)
+st.caption(
+    "Source: CDC/NCHS National Health Interview Survey (NHIS), Early Release Program. "
+    "NHIS-based uninsured rates may differ from U.S. Census Bureau ACS state-level figures "
+    "due to different survey methodologies, reference periods, and definitions of coverage."
+)
 
 
 # ── Chart 2: Marketplace enrollment surge ────────────────────────────────────
@@ -219,7 +225,6 @@ st.markdown(
 
 fig_seesaw = go.Figure()
 
-# Medicaid monthly on left axis
 fig_seesaw.add_trace(go.Scatter(
     x=med["date"],
     y=med["total_enrollment"],
@@ -228,20 +233,17 @@ fig_seesaw.add_trace(go.Scatter(
     fill="tozeroy",
     line=dict(color=COLORS["medicaid"], width=2),
     fillcolor="rgba(5, 150, 105, 0.1)",
-    yaxis="y",
     hovertemplate="%{x|%b %Y}: %{customdata}<extra>Medicaid/CHIP</extra>",
     customdata=[fmt_millions(v) for v in med["total_enrollment"]],
 ))
 
-# Marketplace annual on right axis
 fig_seesaw.add_trace(go.Bar(
     x=[pd.Timestamp(f"{y}-01-15") for y in mkt["year"]],
     y=mkt["total_selections"],
     name="Marketplace selections (annual)",
     marker_color=COLORS["marketplace"],
-    opacity=0.7,
+    opacity=0.85,
     width=86400000 * 120,
-    yaxis="y2",
     hovertemplate="%{customdata}<extra>Marketplace</extra>",
     customdata=[f"{y}: {fmt_millions(v)}" for y, v in zip(mkt["year"], mkt["total_selections"])],
 ))
@@ -258,25 +260,13 @@ fig_seesaw.add_annotation(
     font=dict(size=11, color=COLORS["text_muted"]),
 )
 
-med_max = med["total_enrollment"].max()
-mkt_max = mkt["total_selections"].max()
-
 fig_seesaw.update_layout(
     **PLOT_LAYOUT,
     height=450,
     yaxis=dict(
-        title=dict(text="Medicaid/CHIP enrollment", font=dict(color=COLORS["medicaid"])),
+        title="Enrollment",
         gridcolor="#E2E8F0",
         tickformat=",.0s",
-        range=[0, med_max * 1.15],
-    ),
-    yaxis2=dict(
-        title=dict(text="Marketplace plan selections", font=dict(color=COLORS["marketplace"])),
-        overlaying="y",
-        side="right",
-        tickformat=",.0s",
-        range=[0, mkt_max * 1.4],
-        showgrid=False,
     ),
     xaxis=dict(gridcolor="#E2E8F0"),
 )
