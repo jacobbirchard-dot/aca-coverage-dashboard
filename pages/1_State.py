@@ -137,9 +137,14 @@ else:
 # ── Chart 3: Expansion vs. non-expansion scatter ─────────────────────────────
 st.markdown("---")
 st.markdown("### Medicaid Expansion and the Uninsured Rate")
+
+_intro_2023 = panel[panel["year"] == 2023].dropna(subset=["uninsured_rate"])
+_exp_mean = _intro_2023[_intro_2023["expanded_medicaid"]]["uninsured_rate"].mean()
+_nonexp_mean = _intro_2023[~_intro_2023["expanded_medicaid"]]["uninsured_rate"].mean()
 st.markdown(
-    "States that expanded Medicaid under the ACA consistently have lower uninsured rates. "
-    "In 2023, expansion states averaged a 6.7% uninsured rate vs. 10.0% in non-expansion states."
+    f"States that expanded Medicaid under the ACA consistently have lower uninsured rates. "
+    f"In 2023, expansion states averaged a {_exp_mean:.1f}% uninsured rate vs. "
+    f"{_nonexp_mean:.1f}% in non-expansion states."
 )
 
 scatter_year = st.select_slider(

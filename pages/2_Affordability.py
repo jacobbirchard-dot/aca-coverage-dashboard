@@ -112,7 +112,8 @@ st.plotly_chart(fig_gap, use_container_width=True)
 st.markdown("### The $10-or-Less Club")
 st.markdown(
     "The number of people paying $10 or less per month exploded after enhanced "
-    "subsidies took effect — then dropped sharply in 2026 projections."
+    "subsidies took effect — the 2026 figure assumes enhanced subsidies expire as "
+    "scheduled; if Congress extends them, the number would remain near 2025 levels."
 )
 
 lte10_data = mkt[mkt["year"] >= 2022].copy()

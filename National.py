@@ -152,11 +152,15 @@ fig_unins.add_annotation(
     arrowcolor=COLORS["text_muted"],
 )
 
+_unins_min = nhis_all["uninsured_pct"].min()
+_unins_max = nhis_all["uninsured_pct"].max()
+_unins_pad = max(0.5, (_unins_max - _unins_min) * 0.25)
+
 fig_unins.update_layout(
     **PLOT_LAYOUT,
     yaxis=dict(
         title="% uninsured (all ages)",
-        range=[5, 11],
+        range=[_unins_min - _unins_pad, _unins_max + _unins_pad],
         gridcolor="#E2E8F0",
         ticksuffix="%",
     ),
